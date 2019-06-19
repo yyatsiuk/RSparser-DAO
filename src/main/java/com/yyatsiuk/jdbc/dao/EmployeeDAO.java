@@ -3,8 +3,7 @@ package com.softserve.ita.dao;
 import com.softserve.ita.exceptions.DAOException;
 import com.softserve.ita.exceptions.ParseException;
 import com.softserve.ita.model.Employee;
-import com.softserve.ita.parser.ResultSetParser;
-import com.softserve.ita.util.DBUtil;
+import com.softserve.ita.parser.DbMapper;
 
 import java.sql.*;
 import java.util.List;
@@ -15,26 +14,32 @@ public class EmployeeDAO {
     private static final String user = "root";
     private static final String password = "256415sl";
 
-    public static Employee selectAll() throws DAOException{
-        ResultSetParser<Employee> parser = new ResultSetParser<>();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+    public static List<Employee> getAllEmployee() throws DAOException{
+        DbMapper<Employee> parser = new DbMapper<>();
 
-        String query ="select id, name, salary, is_working from employees where id = ?";
         try(Connection conn = DriverManager.getConnection(dbUrl,user,password)
         ){
-            stmt = conn.prepareStatement(query);
-            stmt.setInt(1, 1);
-            rs = stmt.executeQuery();
-            return parser.toObject(rs,Employee.class);
+
+          return parser.selectAll(Employee.class, conn);
 
         }catch (SQLException | ParseException e) {
             // logger
             throw new DAOException(e.getMessage(), e);
         }
-         finally {
-            DBUtil.closeResultSet(rs);
-            DBUtil.closeStatement(stmt);
+
+    }
+
+    public static Employee getEmployeeById(int id) throws DAOException{
+        DbMapper<Employee> parser = new DbMapper<>();
+
+        try(Connection conn = DriverManager.getConnection(dbUrl,user,password)
+        ){
+
+            return parser.selectById(Employee.class, conn, id);
+
+        }catch (SQLException | ParseException e) {
+            // logger
+            throw new DAOException(e.getMessage(), e);
         }
     }
 }

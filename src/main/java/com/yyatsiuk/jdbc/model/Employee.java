@@ -7,7 +7,7 @@ import com.softserve.ita.anotations.Table;
 @Table(name ="employees")
 public class Employee {
 
-    @Column(name ="id")
+    @Column(name ="id", isId = true)
     private int id;
 
     @Column(name ="name")
@@ -21,7 +21,6 @@ public class Employee {
 
     @Column(name = "is_working")
     private boolean isWorking;
-
 
 
     public int getId() {
@@ -72,6 +71,6 @@ public class Employee {
                 ", department='" + department + '\'' +
                 ", salary=" + salary +
                 ", isWorking=" + isWorking +
-                '}';
+                "";
     }
 }
